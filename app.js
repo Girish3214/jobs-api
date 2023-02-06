@@ -6,8 +6,14 @@ import cors from "cors";
 import xss from "xss-clean";
 import limiter from "express-rate-limit";
 
+import swaggerUI from "swagger-ui-express";
+import YAML from "yamljs";
+
 const app = express();
 dotenv.config();
+
+// swagger UI
+const swaggerDocumnet = YAML.load("./swagger.yaml");
 
 // error handler
 import notFound from "./middleware/not-found.js";
@@ -35,6 +41,7 @@ app.use(xss());
 
 const baseUrl = process.env.BASEURL;
 
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocumnet));
 // routes
 app.use(`${baseUrl}/auth`, authRouter);
 app.use(`${baseUrl}/jobs`, authenticateUser, jobsRouter);
